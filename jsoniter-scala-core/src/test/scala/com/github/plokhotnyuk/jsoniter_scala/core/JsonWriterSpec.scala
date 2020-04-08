@@ -498,8 +498,8 @@ class JsonWriterSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyCh
         i should be < l - 1
         Character.isDigit(s.charAt(i - 1)) shouldBe true // has a digit before the '.' character
         Character.isDigit(s.charAt(i + 1)) shouldBe true // has a digit after the '.' character
-        withWriter(_.writeValAsString(n)) shouldBe s""""$s""""
-        withWriter(_.writeKey(n)) shouldBe s""""$s":"""
+//        withWriter(_.writeValAsString(n)) shouldBe s""""$s""""
+//        withWriter(_.writeKey(n)) shouldBe s""""$s":"""
       }
 
       check(0.0f)
@@ -554,6 +554,12 @@ class JsonWriterSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyCh
         }
       }
       forAll(genFiniteFloat, minSuccessful(10000))(check)
+      (1 to Int.MaxValue).par.foreach { n =>
+        val x = java.lang.Float.intBitsToFloat(n)
+        if (java.lang.Float.isFinite(x)) {
+          check(x)
+        }
+      }
     }
     "write float values exactly as expected" in {
       def check(n: Float, s: String): Unit = {
